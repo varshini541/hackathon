@@ -28,12 +28,32 @@ export const ChatbotPage: React.FC = () => {
     { label: '🎯 Career Tip', text: `What skills should I prioritize to become a ${user.targetRole}?` }
   ];
 
-  const handleSend = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!inputQuery.trim()) return;
-    addChatMessage(inputQuery.trim(), 'user');
-    setInputQuery('');
-  };
+ const handleSend = (e?: React.FormEvent) => {
+  if (e) e.preventDefault();
+
+  const message = inputQuery.trim();
+  if (!message) return;
+
+  const personalizedPrompt = `
+You are EduBridge AI Tutor.
+
+Student name: ${user.name}
+Career goal: ${user.targetRole}
+Education level: ${user.educationLevel}
+Learning style: ${user.learningStyles.join(', ')}
+Accessibility needs: ${user.accommodations.join(', ')}
+
+Student question:
+${message}
+
+Give a simple, personalized answer.
+Use short steps and examples.
+If the question is related to the student's career goal, connect the answer to that goal.
+  `.trim();
+
+  addChatMessage(personalizedPrompt, 'user');
+  setInputQuery('');
+};
 
   const handlePresetClick = (presetText: string) => {
     addChatMessage(presetText, 'user');
